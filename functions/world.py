@@ -1,13 +1,15 @@
 from objects.cube import Cube
+from functions.lighting import Light
 import random
 import numpy as np
 from OpenGL.GL import *
 
 class World:
-    def __init__(self, number:int) -> None:
+    def __init__(self, number:int, shader) -> None:
         self.cubesCount = 0
         self.cubes, self.VBOs = [], []
         self.__generateTerrain(number)
+        self.light = Light(shader)
     
     def __generateTerrain(self, widthXheight:int):
         """Ez a függvény felelős létrehozni az alap területet.
@@ -19,10 +21,10 @@ class World:
                     if y < 1:
                         c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])
                         self.__saveCube(c)
-                    elif y == 1 and random.randint(1,100) < 65 and (x > 1.5 or x < -1.5 or z > 1.5 or z < -1.5):
+                    elif y == 1 and random.randint(1,100) < 65 and (x > 2 or x < -2 or z > 2 or z < -2):
                         c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])  
                         self.__saveCube(c)
-                    elif y == 2 and random.randint(1,100) < 40  and (x > 1.5 or x < -1.5 or z > 1.5 or z < -1.5):
+                    elif y == 2 and random.randint(1,100) < 40  and (x > 2 or x < -2 or z > 2 or z < -2):
                         c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])  
                         self.__saveCube(c)
     

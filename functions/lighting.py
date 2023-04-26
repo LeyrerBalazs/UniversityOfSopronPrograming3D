@@ -1,10 +1,11 @@
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
 class Light:
-    def __init__(self):
-        self.x = -10.0
-        self.y = 0.0
-        self.z = 0.0
-        self.leftToRight = True
-        self.downToUp = True
+    def __init__(self, shader):
+        self.x, self.y, self.z = -10.0, 0.0, 0.0
+        self.leftToRight, self.downToUp = True, True
+        self.__giveLightDataToVertex(shader)
 
     def lightPos(self) -> None:
         """Ez állítja be a Fény mozgó Pozicíóját.
@@ -34,3 +35,6 @@ class Light:
             self.y += 0.1
         elif self.downToUp == False:
             self.y -= 0.1
+    
+    def __giveLightDataToVertex(self, shader):
+        glUniform3f(glGetUniformLocation(shader, 'lightPos'), self.x, self.y, self.z)

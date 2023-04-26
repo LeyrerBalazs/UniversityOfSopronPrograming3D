@@ -1,10 +1,10 @@
 from OpenGL.GL import *
 import OpenGL.GL.shaders
-import numpy as np
 import pyrr
 import math
 from functions.glfwFunctions import *
 from functions.world import World
+from functions.lighting import Light
 
 def readShaderFile(filename:str) -> str:
     """Shader fájl beolvasás.
@@ -37,7 +37,7 @@ def perspectiveMatrixMath(angle):
     rotMat = pyrr.matrix44.create_from_axis_rotation(pyrr.Vector3([1., 1., 1.0]), math.radians(angle))
     return pyrr.matrix44.multiply(rotMat, transMat)
 
-def giveDatasForVertex(angle, shader, lx:float,ly:float, lz:float) -> None:
+def giveDatasForVertex(angle, shader) -> None:
     """Átad minden szükséges adatot a ./../shaders/vertex_shader.vert-nek.
     Args:
         angle (float): Szög.
@@ -49,7 +49,7 @@ def giveDatasForVertex(angle, shader, lx:float,ly:float, lz:float) -> None:
     matrix = perspectiveMatrixMath(angle)
     glUniformMatrix4fv(transformMatrix, 1, GL_FALSE, matrix )
     glUniformMatrix4fv(perspectiveMatrix, 1, GL_FALSE, perspMatrix )
-    glUniform3f(glGetUniformLocation(shader, 'lightPos'), lx, ly, lz)
+    
 
 def loadShaders():
     """Shaderek beolvasása és Shader Program létrehozása.
@@ -63,16 +63,16 @@ def setDatas(number:int):
         number (int): Mekkora legyen a platform.
     Returns:
         window (glfw)
-        count (int): Hány darab Cube-ot kell kirajzolnia.
-        cubes (list): A Cubo-k adatai.
+        world (World): A világ információi
+        light (Light): A Cubo-k adatai.
         VBOs (list): Vertex Buffer Objectum-ok.
         shader: Shader Program adatok.
         angle (float): Szög.
         elapsedTime (float): Elipszis idő."""
     window = createGLFWwindow()
-    world = World(number)
     shader = loadShaders()
     glUseProgram(shader)
+    world = World(number, shader)
     glEnable(GL_DEPTH_TEST)
     return window, world, shader, 0.0, 0.0
 
