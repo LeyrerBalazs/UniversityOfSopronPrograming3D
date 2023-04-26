@@ -1,19 +1,13 @@
-# Imports
-# Default imports
 from OpenGL.GL import *
 from OpenGL.GLU import *
-# Custom imports
 from functions.openGLFunctions import *
 
 def main() -> None:
-    """Main function
-    """
-    # Declare variables
+    """Main function"""
     window, count, cubes, VBOs, shader, angle, elapsedTime = setDatas(30)
     lightCoords = [-10.0, 0.0, 0.0]
     leftToRight = True
     downToUp = True
-    # Main function
     while not glfw.window_should_close(window):
         startTime = glfw.get_time()
         glfw.poll_events() 
@@ -27,6 +21,5 @@ def main() -> None:
     glfw.terminate()
 
 if __name__ == "__main__":
-    """__main___
-    """
+    """__main___"""
     main()
