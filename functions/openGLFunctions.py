@@ -44,14 +44,14 @@ def generateTerrain(widthXheight:int):
     # Main function
     for x in range(xLengthStart, xLengthEnd, 1):
         for z in range(zLengthStart, zLengthEnd, 1):
-            for y in range(-3, 2, 1):
+            for y in range(-3, 3, 1):
                 if y < 1:
                     c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])
                     cubes, count, VBOs = saveCube(c, cubes, count, VBOs)
-                elif y == 1 and random.randint(1,100) < 65:
+                elif y == 1 and random.randint(1,100) < 65 and (x > 1.5 or x < -1.5 or z > 1.5 or z < -1.5):
                     c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])  
                     cubes, count, VBOs = saveCube(c, cubes, count, VBOs)
-                elif y == 2 and random.randint(1,100) < 40:
+                elif y == 2 and random.randint(1,100) < 40  and (x > 1.5 or x < -1.5 or z > 1.5 or z < -1.5):
                     c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])  
                     cubes, count, VBOs = saveCube(c, cubes, count, VBOs)
     # Returns

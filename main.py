@@ -21,7 +21,7 @@ def main() -> None:
         lightCoords[0], lightCoords[1], leftToRight, downToUp = lightPos(lightCoords[0], lightCoords[1], leftToRight, downToUp)
         giveDatasForVertex(angle, shader, lightCoords[0], lightCoords[1], lightCoords[2])
         drawObjects(count, cubes, VBOs)
-        glfw.swap_buffers(window)	
+        glfw.swap_buffers(window)
         endTime = glfw.get_time()
         elapsedTime = endTime - startTime
     glfw.terminate()
