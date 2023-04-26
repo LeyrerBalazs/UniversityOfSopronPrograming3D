@@ -1,47 +1,10 @@
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
-from objects.cube import Cube
 import pyrr
 import math
-import random
 from functions.glfwFunctions import *
-
-def saveCube(c:Cube, cubes:list, count:int, VBOs:list):
-    cubes.append(c)
-    rectangle = np.array(c.vertPoints, dtype=np.float32)
-    VBO = glGenBuffers(1)
-    glBindBuffer(GL_ARRAY_BUFFER, VBO)
-    glBufferData(GL_ARRAY_BUFFER, rectangle.nbytes, rectangle, GL_STATIC_DRAW)
-    glBindBuffer(GL_ARRAY_BUFFER, 0)
-    VBOs.append(VBO)
-    count += 1
-    return cubes, count, VBOs
-
-
-def generateTerrain(widthXheight:int):
-    """Ez a függvény felelős létrehozni az alap területet.
-    Args:
-        widthXheight (int): Egy szám amely megadja, hogy hányszór hányas a platform.
-    Returns:
-        count (int): Hány darab Cube objektum jött létre.
-        cubes (list): Lista amely tartalmazza a Cube példányokat.
-        VBOs (list): Vertex Buffer Objectum-ok."""
-    count = 0
-    cubes, VBOs = [], []
-    for x in range(int(-1 * (widthXheight/2)), int(widthXheight/2), 1):
-        for z in range(int(-1 * (widthXheight/2)), int(widthXheight/2), 1):
-            for y in range(-3, 3, 1):
-                if y < 1:
-                    c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])
-                    cubes, count, VBOs = saveCube(c, cubes, count, VBOs)
-                elif y == 1 and random.randint(1,100) < 65 and (x > 1.5 or x < -1.5 or z > 1.5 or z < -1.5):
-                    c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])  
-                    cubes, count, VBOs = saveCube(c, cubes, count, VBOs)
-                elif y == 2 and random.randint(1,100) < 40  and (x > 1.5 or x < -1.5 or z > 1.5 or z < -1.5):
-                    c = Cube([x,y,z],[random.uniform(0.00,255.00),random.uniform(0.00,1.00),random.uniform(0.00,1.00)])  
-                    cubes, count, VBOs = saveCube(c, cubes, count, VBOs)
-    return count, cubes, VBOs
+from functions.world import World
 
 def readShaderFile(filename:str) -> str:
     """Shader fájl beolvasás.
@@ -52,24 +15,6 @@ def readShaderFile(filename:str) -> str:
     with open(filename) as f:
 	    return f.read()
     
-def drawObjects(count:int, cubes:list, VBOs:list) -> None:
-    """Ezt a fügvényt hívja meg a végtelen ciklus és ez törli az előzőt és rajzolja ki az objektumokat újra.
-    Args:
-        count (int): Hány darab Cube-ot kell kirajzolnia.
-        cubes (list): A Cubo-k adatai.
-        VBOs (list): Vertex Buffer Objectum-ok."""
-    glClearColor(0, 0, 0, 1)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    for i in range(count):
-        glBindBuffer(GL_ARRAY_BUFFER, VBOs[i])
-        glEnableVertexAttribArray(0)
-        glEnableVertexAttribArray(0)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, None)
-        glEnableVertexAttribArray(1)
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
-        glDrawArrays(GL_QUADS, 0, cubes[i].vertCounts)
-        glDisableVertexAttribArray(0)
-        glDisableVertexAttribArray(1)
 
 def makePerspectiveMatrix(shader):
     """Ez a függvény felelős létrehozni a pyrr perspectívmátrixot.
@@ -125,10 +70,10 @@ def setDatas(number:int):
         angle (float): Szög.
         elapsedTime (float): Elipszis idő."""
     window = createGLFWwindow()
-    count, cubes, VBOs = generateTerrain(number)
+    world = World(number)
     shader = loadShaders()
     glUseProgram(shader)
     glEnable(GL_DEPTH_TEST)
-    return window, count, cubes, VBOs, shader, 0.0, 0.0
+    return window, world, shader, 0.0, 0.0
 
 
