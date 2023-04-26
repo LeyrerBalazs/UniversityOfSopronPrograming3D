@@ -28,8 +28,7 @@ def generateTerrain(widthXheight:int):
         cubes (list): Lista amely tartalmazza a Cube példányokat.
         VBOs (list): Vertex Buffer Objectum-ok."""
     count = 0
-    cubes = []
-    VBOs = []
+    cubes, VBOs = [], []
     for x in range(int(-1 * (widthXheight/2)), int(widthXheight/2), 1):
         for z in range(int(-1 * (widthXheight/2)), int(widthXheight/2), 1):
             for y in range(-3, 3, 1):
@@ -132,32 +131,4 @@ def setDatas(number:int):
     glEnable(GL_DEPTH_TEST)
     return window, count, cubes, VBOs, shader, 0.0, 0.0
 
-def lightPos(lx:float, ly:float, leftToRight:bool, downToUp:bool) -> float:
-    """Ez állítja be a Fény mozgó Pozicíóját.
-    Args:
-        lx (float): Fény x koordináta.
-        ly (float): Fény x koordináta.
-        leftToRight (bool): Balról megy jobbra.
-        downToUp (bool): Lentről megy fel.
-    Returns:
-        lx (float): Fény x koordináta.
-        ly (float): Fény x koordináta.
-        leftToRight (bool): Balról megy jobbra.
-        downToUp (bool): Lentről megy fel."""
-    if int(lx) == 10.0:
-        leftToRight = False
-    elif int(lx) == -10.0:
-        leftToRight= True
-    if int(ly) == 10:
-        downToUp = False
-    elif int(ly) == -10.0:
-        downToUp= True
-    if leftToRight == True:
-        lx += 0.1
-    elif leftToRight == False:
-        lx -= 0.1
-    if downToUp == True:
-        ly += 0.1
-    elif downToUp == False:
-        ly -= 0.1
-    return lx, ly, leftToRight, downToUp
+

@@ -1,19 +1,18 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from functions.openGLFunctions import *
+from functions.lighting import Light
 
 def main() -> None:
     """Main function"""
     window, count, cubes, VBOs, shader, angle, elapsedTime = setDatas(30)
-    lightCoords = [-10.0, 0.0, 0.0]
-    leftToRight = True
-    downToUp = True
+    light = Light()
     while not glfw.window_should_close(window):
         startTime = glfw.get_time()
         glfw.poll_events() 
         angle += 45.0 * elapsedTime
-        lightCoords[0], lightCoords[1], leftToRight, downToUp = lightPos(lightCoords[0], lightCoords[1], leftToRight, downToUp)
-        giveDatasForVertex(angle, shader, lightCoords[0], lightCoords[1], lightCoords[2])
+        light.lightPos()
+        giveDatasForVertex(angle, shader, light.x, light.y, light.z)
         drawObjects(count, cubes, VBOs)
         glfw.swap_buffers(window)
         endTime = glfw.get_time()
