@@ -1,7 +1,7 @@
 from objects.cube import Cube
 from functions.lighting import Light
 from functions.texture import Texture
-from objects.character import Character
+from functions.camera import Camera
 import random
 import numpy as np
 from OpenGL.GL import *
@@ -13,7 +13,7 @@ class World:
         self.__generateTerrain(number)
         self.light = Light(shader)
         self.texture = Texture()
-        self.character = Character(shader)
+        self.camera = Camera(shader)
         self.character = ()
     
     def __generateTerrain(self, size:int):
@@ -42,7 +42,7 @@ class World:
         self.VBOs.append(VBO)
         self.cubesCount += 1
     
-    def drawObjects(self) -> None:
+    def drawObjects(self, camera, cameraMatrix) -> None:
         """Ezt a fügvényt hívja meg a végtelen ciklus és ez törli az előzőt és rajzolja ki az objektumokat újra."""
         glClearColor(0, 0, 0, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -55,6 +55,9 @@ class World:
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
             glEnableVertexAttribArray(2)
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(24))
+            glEnableVertexAttribArray(2)
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(24))
+            camera.apply(cameraMatrix)
             glBindTexture(GL_TEXTURE_2D, self.texture.texture)
             glDrawArrays(GL_QUADS, 0, self.cubes[i].vertCounts)
             glDisableVertexAttribArray(0)

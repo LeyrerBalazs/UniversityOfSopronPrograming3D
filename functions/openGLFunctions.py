@@ -4,7 +4,6 @@ import pyrr
 import math
 from functions.glfwFunctions import *
 from functions.world import World
-from functions.lighting import Light
 
 def readShaderFile(filename:str) -> str:
     """Shader fájl beolvasás.

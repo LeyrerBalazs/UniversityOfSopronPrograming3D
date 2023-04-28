@@ -18,3 +18,13 @@ def createGLFWwindow() -> glfw:
     glfw.make_context_current(window)
     # Returns
     return window
+
+def cameraMoves(camera, window, elapsedTime) -> None:
+    if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
+        camera.move(elapsedTime * 15)
+    if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
+        camera.move(-elapsedTime * 15)
+    if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
+        camera.rotateRightLeft(-elapsedTime * 30)
+    if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
+        camera.rotateRightLeft(elapsedTime * 30) 
