@@ -1,78 +1,97 @@
-from OpenGL.GL import *
-import OpenGL.GL.shaders
+# Importok:
+
+# Python modul importok:
+
 import pyrr
 import math
+from OpenGL.GL import *
+import OpenGL.GL.shaders
+
+#Egyedi Python modul importok:
+
 from functions.glfwFunctions import *
 from functions.world import World
 
-def readShaderFile(filename:str) -> str:
-    """Shader fájl beolvasás.
+
+# Függvények:
+
+def readFile(filePath:str) -> str:
+    """Beolvassa a fájl tartalmát.
+
     Args:
-        filename (str): Fájl neve.
+        filePath (str): Fájl útvonala és neve.
+
     Returns:
-        str: Fájl tartalma."""
-    with open(filename) as f:
+        str: Fájl tartalom.
+    """
+
+    with open(filePath) as f:
 	    return f.read()
     
-
 def makePerspectiveMatrix(shader):
-    """Ez a függvény felelős létrehozni a pyrr perspectívmátrixot.
+    """Ez hozza létre a pyrr perspektív mátrixot.
+
     Args:
-        shader: Shader Program adatok.
+        shader (ShaderProgram): Shader adat.
+
     Returns:
-        Késöbbiekben szükséges adatok."""
+        any: Késöbbiekben felhasznált adatok.
+    """
+
     transformMatrix = glGetUniformLocation(shader, "modelView")
     perspectiveMatrix = glGetUniformLocation(shader, "perspectiveMatrix")
     perspMatrix = pyrr.matrix44.create_perspective_projection_matrix(45.0, 1280.0 / 720.0, 0.1, 1000.0)
     return transformMatrix, perspectiveMatrix, perspMatrix
 
 def perspectiveMatrixMath(angle):
-    """Ez számolja ki a perspektív mátrix értékeit.
+    """Ez számolja ki a perspektívmátrix-ot.
+
     Args:
-        angle (float): Szög.
+        angle (float): Látószög.
+
     Returns:
-        Késöbb szükséges adat."""
+        any : Perspektív mátrix számai.
+    """
+
     transMat = pyrr.matrix44.create_from_translation(  pyrr.Vector3([0.0, 0.0, -60.0]))
     rotMat = pyrr.matrix44.create_from_axis_rotation(pyrr.Vector3([1., 1., 1.0]), math.radians(angle))
     return pyrr.matrix44.multiply(rotMat, transMat)
 
 def giveDatasForVertex(angle, shader) -> None:
-    """Átad minden szükséges adatot a ./../shaders/vertex_shader.vert-nek.
+    """Adatok odaadása a './vertex_shader.vert' számára.
+
     Args:
-        angle (float): Szög.
-        shader: Shader Program adatok.
-        lx (float): Fény x koordinátája.
-        ly (float): Fény y koordinátája.
-        lz (float): Fény z koordinátája."""
+        angle (float): Ltószög.
+        shader (ShaderProgram): Shader adat.
+    """
+
     transformMatrix, perspectiveMatrix, perspMatrix = makePerspectiveMatrix(shader)
     matrix = perspectiveMatrixMath(angle)
     glUniformMatrix4fv(transformMatrix, 1, GL_FALSE, matrix )
     glUniformMatrix4fv(perspectiveMatrix, 1, GL_FALSE, perspMatrix )
     
+def makeShader():
+    """Létrehozza a shader programot
 
-def loadShaders():
-    """Shaderek beolvasása és Shader Program létrehozása.
     Returns:
-        shader: Visszad egy shader program adatokat."""
-    return OpenGL.GL.shaders.compileProgram(OpenGL.GL.shaders.compileShader(readShaderFile("shaders/vertex_shader.vert"), GL_VERTEX_SHADER), OpenGL.GL.shaders.compileShader(readShaderFile("shaders/fragment_shader.frag"), GL_FRAGMENT_SHADER))
+        ShaderProgram: Shader adat.
+    """
+
+    return OpenGL.GL.shaders.compileProgram(OpenGL.GL.shaders.compileShader(readFile("shaders/vertex_shader.vert"), GL_VERTEX_SHADER), OpenGL.GL.shaders.compileShader(readFile("shaders/fragment_shader.frag"), GL_FRAGMENT_SHADER))
 
 def setDatas(number:int):
-    """Beállítja a PyOpenGL beállításokat a window-ra.
+    """Adatok beállítása.
+
     Args:
-        number (int): Mekkora legyen a platform.
+        number (int): Világ méret.
+
     Returns:
-        window (glfw)
-        world (World): A világ információi
-        light (Light): A Cubo-k adatai.
-        VBOs (list): Vertex Buffer Objectum-ok.
-        shader: Shader Program adatok.
-        angle (float): Szög.
-        elapsedTime (float): Elipszis idő."""
+        any: GLFW window, World, ShaderProgram, szög (float), elipszisidő (float).
+    """
+
     window = createGLFWwindow()
-    shader = loadShaders()
+    shader = makeShader()
     glUseProgram(shader)
     world = World(number, shader)
     glEnable(GL_DEPTH_TEST)
     return window, world, shader, 0.0, 0.0
-
-

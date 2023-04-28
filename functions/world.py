@@ -1,38 +1,64 @@
-from objects.cube import Cube
-from functions.lighting import Light
-from functions.texture import Texture
-from functions.camera import Camera
+# Importok:
+
+# Python modul importok:
+
 import random
 import numpy as np
 from OpenGL.GL import *
 
+#Egyedi Python modul importok:
+
+from objects.cube import Cube
+from functions.camera import Camera
+from functions.lighting import Light
+from functions.texture import Texture
+
+
+# Osztályok:
+
 class World:
+    """Világ.
+    """
+
     def __init__(self, number:int, shader) -> None:
+        """Konstruktor
+
+        Args:
+            number (int): Terület mérete.
+            shader (ShaderProgram): Shader adat.
+        """
         self.cubesCount = 0
         self.cubes, self.VBOs = [], []
         self.__generateTerrain(number)
         self.light = Light(shader)
         self.texture = Texture()
         self.camera = Camera(shader)
-        self.character = ()
     
-    def __generateTerrain(self, size:int):
-        """Ez a függvény felelős létrehozni az alap területet.
+    # Belső függvények
+
+    def __generateTerrain(self, size:int) -> None:
+        """Terület legenárálása és spawnpoint kihagyása a domborzatból.
+
         Args:
-            size (int): Egy szám amely megadja, hogy hányszór hányas a platform."""
+            size (int): Terület mérete (Négyzet forma oldalhossza).
+        """
         for x in range(int(-1 * (size/2)), int(size/2), 1):
             for z in range(int(-1 * (size/2)), int(size/2), 1):
                 for y in range(-3, 3, 1):
                     if y < 1:
-                        self.__saveCube(x, y, z)
+                        self.__saveCube([x, y, z])
                     elif y == 1 and random.randint(1,100) < 65 and (x > 2 or x < -2 or z > 2 or z < -2):
-                        self.__saveCube(x, y, z)
+                        self.__saveCube([x, y, z])
                     elif y == 2 and random.randint(1,100) < 40  and (x > 2 or x < -2 or z > 2 or z < -2):
-                        self.__saveCube(x, y, z)
+                        self.__saveCube([x, y, z])
     
-    def __saveCube(self, x:int, y:int, z:int):
-        """Elmenti a kockát és a darabszémát és a buffer objektumát."""
-        c = Cube([x,y,z],[0,0,0])
+    def __saveCube(self, coords:list) -> None:
+        """"Generált kocka elmentése.
+
+        Args:
+            coords (list): X, y, z koordináták
+        """
+        c = Cube(coords,[0,0,0])
         self.cubes.append(c)
         rectangle = np.array(c.vertPoints, dtype=np.float32)
         VBO = glGenBuffers(1)
@@ -42,8 +68,16 @@ class World:
         self.VBOs.append(VBO)
         self.cubesCount += 1
     
+
+    # Külső függvények
+
     def drawObjects(self, camera, cameraMatrix) -> None:
-        """Ezt a fügvényt hívja meg a végtelen ciklus és ez törli az előzőt és rajzolja ki az objektumokat újra."""
+        """Világ kirajzolása.
+
+        Args:
+            camera (Camera): Kamera osztálypéldány.
+            cameraMatrix (any): Kamera mátrix adatai.
+        """
         glClearColor(0, 0, 0, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         for i in range(self.cubesCount):

@@ -1,24 +1,48 @@
+# Importok:
+
+# Python modul importok:
+
 from OpenGL.GL import *
-from OpenGL.GLU import *
+
+
+# Osztályok:
 
 class Light:
+    """Fény.
+    """
+
     def __init__(self, shader):
+        """Konstruktor.
+
+        Args:
+            shader (ShaderProgram): Shader adat.
+        """
+        
         self.x, self.y, self.z = -10.0, 0.0, 0.0
         self.leftToRight, self.downToUp = True, True
         self.__giveLightDataToVertex(shader)
 
-    def lightPos(self) -> None:
-        """Ez állítja be a Fény mozgó Pozicíóját.
+
+    # Belső függvények:
+
+    def __giveLightDataToVertex(self, shader):
+        """Adatok odaadása a './vertex_shader.vert' számára.
+
         Args:
-            lx (float): Fény x koordináta.
-            ly (float): Fény x koordináta.
-            leftToRight (bool): Balról megy jobbra.
-            downToUp (bool): Lentről megy fel.
-        Returns:
-            lx (float): Fény x koordináta.
-            ly (float): Fény x koordináta.
-            leftToRight (bool): Balról megy jobbra.
-            downToUp (bool): Lentről megy fel."""
+            shader (ShaderProgram): Shader adat.
+        """
+
+        glUniform3f(glGetUniformLocation(shader, 'lightPos'), self.x, self.y, self.z)
+
+
+    # Külső függvények:
+
+    def lightPos(self) -> None:
+        """A fény pozíciójának 45-fokban döntött pozícióval.
+        """
+
+        # Döntés hozás, merre menjen:
+
         if int(self.x) == 10.0:
             self.leftToRight = False
         elif int(self.x) == -10.0:
@@ -27,6 +51,10 @@ class Light:
             self.downToUp = False
         elif int(self.y) == -10.0:
             self.downToUp= True
+
+
+        # Fény koordinátáinak áthelyezése, fény mozgása:
+
         if self.leftToRight == True:
             self.x += 0.1
         elif self.leftToRight == False:
@@ -35,6 +63,3 @@ class Light:
             self.y += 0.1
         elif self.downToUp == False:
             self.y -= 0.1
-    
-    def __giveLightDataToVertex(self, shader):
-        glUniform3f(glGetUniformLocation(shader, 'lightPos'), self.x, self.y, self.z)

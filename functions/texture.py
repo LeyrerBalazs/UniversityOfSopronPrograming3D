@@ -1,11 +1,32 @@
-from OpenGL.GL import *
+# Importok:
+
+# Python modul importok:
+
 from PIL import Image
+from OpenGL.GL import *
+
+
+# Osztályok:
 
 class Texture:
+    """Textura kezelő osztály.
+    """
+
     def __init__(self):
+        """Konstruktor.
+        """
+
         self.texture = self.__createTexture()
 
+    # Belső függvények:
+
     def __createTexture(self):
+        """Létrehozza a texturát.
+
+        Returns:
+            any: Visszadja a texturát.
+        """
+        
         texture = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, texture)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
