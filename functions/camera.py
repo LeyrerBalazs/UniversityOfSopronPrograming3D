@@ -5,9 +5,9 @@ import pyrr
 class Camera:
     def __init__(self, shader):
         self.x = 0
-        self.y = 2
-        self.z = 0
-        self.dirX = 0
+        self.y = 2.5
+        self.z = -60
+        self.dirX = 10
         self.dirY = 0
         self.dirZ = -1
         self.angleVert = -90.0
